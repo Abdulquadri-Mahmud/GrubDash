@@ -5,7 +5,7 @@ import GrubDashLogo from "../GrubDashLogo/GrubDashLogo";
 
 export default function SplashScreen() {
   return (
-    <div className="bg-background-light dark:bg-background-dark font-display relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+    <div className="bg-background-light font-display relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
       {/* Background Overlay */}
       <div className="absolute inset-0 bg-background-light dark:bg-background-dark">
         <div

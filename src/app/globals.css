@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "react-loading-skeleton/dist/skeleton.css";
 
 .bgImage{
   background-blend-mode: multiply;

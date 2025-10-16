@@ -61,11 +61,9 @@ export default function HomeHeader() {
         {isLoading ? (
           <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
         ) : userData?.avatar ? (
-          <img
-            src={userData.avatar}
-            alt="User Avatar"
-            className="w-9 h-9 rounded-full object-cover border-2 border-[#FF6B00]"
-          />
+            <Link href='/profile'>
+              <img src={userData.avatar} alt="User Avatar" className="w-9 h-9 rounded-full object-cover border-2 border-[#FF6B00]"/>
+            </Link>
         ) : (
           <FaUser className="text-gray-400 w-8 h-8" />
         )}

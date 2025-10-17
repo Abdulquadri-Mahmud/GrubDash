@@ -119,8 +119,8 @@ export default function VerifyAccount() {
   };
 
   return (
-    <div className="min-h-screen h-full py-20 flex items-center justify-center px-4">
-      <div className="bg-white w-full max-w-md rounded-lg md:p-6 p-3">
+    <div className="fixed inset-0 bg-gray-50 flex items-center justify-center overflow-auto">
+      <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-md flex-shrink-0">
         <div className="w-full mb-5 flex justify-center items-center">
           <LogoImage />
         </div>

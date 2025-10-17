@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { MapPin, Bell } from "lucide-react";
 import { FaUser } from "react-icons/fa";
 import { fetchUser } from "@/app/lib/api";
+import Link from "next/link";
 
 export default function HomeHeader() {
   const [token, setToken] = useState(null);
@@ -65,7 +66,7 @@ export default function HomeHeader() {
               <img src={userData.avatar} alt="User Avatar" className="w-9 h-9 rounded-full object-cover border-2 border-[#FF6B00]"/>
             </Link>
         ) : (
-          <FaUser className="text-gray-400 w-8 h-8" />
+          <FaUser className="text-orange-400 w-8 h-8" />
         )}
       </div>
     </motion.header>

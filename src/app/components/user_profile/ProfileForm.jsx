@@ -13,7 +13,7 @@ const ProfileForm = ({
 }) => {
   return (
     <div className="mb-6">
-      <h3 className="font-bold mb-3">Profile Info</h3>
+      <h3 className="font-semibold text-gray-700 mb-3">Profile Details</h3>
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <label className="block text-gray-600 text-sm">First Name</label>
@@ -23,7 +23,7 @@ const ProfileForm = ({
             onChange={(e) =>
               setUserState((prev) => ({ ...prev, firstname: e.target.value }))
             }
-            className="w-full border border-gray-100 text-gray-400 md:text-md text-sm  rounded p-2"
+            className="w-full border border-gray-100 text-gray-600 md:text-md text-sm  rounded p-2"
           />
         </div>
         <div>
@@ -34,7 +34,7 @@ const ProfileForm = ({
             onChange={(e) =>
               setUserState((prev) => ({ ...prev, lastname: e.target.value }))
             }
-            className="w-full border border-gray-100 text-gray-400 md:text-md text-sm  rounded p-2"
+            className="w-full border border-gray-100 text-gray-600 md:text-md text-sm  rounded p-2"
           />
         </div>
         <div>
@@ -45,7 +45,7 @@ const ProfileForm = ({
             onChange={(e) =>
               setUserState((prev) => ({ ...prev, phone: e.target.value }))
             }
-            className="w-full border border-gray-100 text-gray-400 md:text-md text-sm  rounded p-2"
+            className="w-full border border-gray-100 text-gray-600 md:text-md text-sm  rounded p-2"
           />
         </div>
         <div>
@@ -54,7 +54,7 @@ const ProfileForm = ({
             type="text"
             value={userState.email}
             disabled
-            className="w-full border border-gray-100 text-gray-400 md:text-md text-sm  rounded p-2 bg-gray-100"
+            className="w-full border border-gray-100 text-gray-600 md:text-md text-sm  rounded p-2 bg-gray-100"
           />
         </div>
       </div>

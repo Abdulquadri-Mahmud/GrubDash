@@ -4,7 +4,7 @@ import { useApi } from "@/app/context/ApiContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react"; // ← lightweight icon library
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 const LogoImage = () => (
   <img
@@ -24,7 +24,6 @@ export default function Signin() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -61,9 +60,9 @@ export default function Signin() {
   };
 
   return (
-    <div className="min-h-screen h-full py-16 flex items-center justify-center px-4">
-      <div className="bg-white w-full max-w-md md:p-8 p-3 rounded-2xl">
-        <div className="w-full flex justify-center items-center">
+    <div className="fixed inset-0 bg-gray-50 flex items-center justify-center overflow-auto">
+      <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-md flex-shrink-0">
+        <div className="flex justify-center mb-4">
           <LogoImage />
         </div>
         <p className="text-center text-gray-600 text-sm mt-4 mb-6">
@@ -72,20 +71,20 @@ export default function Signin() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Input */}
-        <div className="relative">
-          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email address"
-            value={formData.email}
-            onChange={handleChange}
-            className="border border-gray-200 rounded-lg w-full p-3 pl-10 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] transition"
-            required
-          />
-        </div>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email address"
+              value={formData.email}
+              onChange={handleChange}
+              className="border border-gray-200 rounded-lg w-full p-3 pl-10 focus:outline-none focus:ring-2 focus:ring-[#FF6B00] transition"
+              required
+            />
+          </div>
 
-        {/* Password Input */}
+          {/* Password Input */}
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
@@ -102,11 +101,7 @@ export default function Signin() {
               onClick={() => setShowPassword((prev) => !prev)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#FF6B00] focus:outline-none"
             >
-              {showPassword ? (
-                <EyeOff className="w-5 h-5" />
-              ) : (
-                <Eye className="w-5 h-5" />
-              )}
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
           </div>
 

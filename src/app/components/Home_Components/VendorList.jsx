@@ -71,7 +71,7 @@ export default function VendorList() {
         <h2 className="font-semibold text-lg mb-3 text-gray-800">
           Top Restaurants
         </h2>
-        <div className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory">
+        <div className="scroll flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory">
           {[1, 2, 3].map((i) => (
             <div
               key={i}

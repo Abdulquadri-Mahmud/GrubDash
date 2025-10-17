@@ -18,7 +18,7 @@ export default function AuthLoader() {
 
       try {
         const data = await fetchUser(token);
-        console.log("✅ User profile:", data);
+        // console.log("✅ User profile:", data);
         setTimeout(() => router.push("/home"), 1000);
       } catch (err) {
         console.error("❌ Auth error:", err);

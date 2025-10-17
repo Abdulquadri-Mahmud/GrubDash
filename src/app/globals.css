@@ -13,13 +13,11 @@ html::-webkit-scrollbar{
   width: 0px;
 }
 .scroll::-webkit-scrollbar{
-  height:0px;
-  background-color: rgb(238, 110, 25);
-  border-radius: 10px;
+  display: none;
 }
-.scroll::-webkit-scrollbar-thumb{
-  background-color: rgb(253, 146, 75);
-  border-radius: 10px;
+.scroll{
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 .scroll_y::-webkit-scrollbar{
   height:0px;

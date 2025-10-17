@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 
 const banners = [
-  { id: 1, text: "🍲 Get ₦1000 off your first order!", color: "bg-[#FF6B00]" },
-  { id: 2, text: "🔥 Try our new spicy Jollof from The Place!", color: "bg-[#FFD580] text-gray-800" },
-  { id: 3, text: "🛵 Fast delivery in under 30 minutes!", color: "bg-[#FF915A]" },
+  { id: 1, text: "Get ₦1000 off your first order!", emoji: "🍲", color: "bg-[#FF6B00]" },
+  { id: 2, text: "Try our new spicy Jollof from The Place!", emoji: "🔥", color: "bg-[#FFD580] text-gray-800" },
+  { id: 3, text: "Fast delivery in under 30 minutes!", emoji: "🛵", color: "bg-[#FF915A]" },
 ];
 
 export default function PromoBanner() {
@@ -35,13 +35,19 @@ export default function PromoBanner() {
             whileTap={{ scale: 0.97 }}
             whileHover={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className={`${banner.color} text-white px-5 py-8 rounded-2xl min-w-[70%] font-semibold shadow-lg flex-shrink-0 snap-center`}
+            className={`${banner.color} px-5 py-6 rounded-2xl min-w-[70%] font-semibold shadow-lg flex-shrink-0 snap-center flex items-center gap-4`}
           >
+            {/* Emoji with white circular background */}
+            <div className="flex-shrink-0 w-14 h-14 rounded-full bg-white flex items-center justify-center text-2xl">
+              {banner.emoji}
+            </div>
+
+            {/* Banner text */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="text-base leading-tight"
+              className="text-base leading-tight flex-1"
             >
               {banner.text}
             </motion.p>

@@ -21,14 +21,8 @@ export default function PromoBanner() {
   }, []);
 
   return (
-    <motion.div className="mt-4 overflow-hidden px-3">
-      <motion.div
-        ref={containerRef}
-        drag="x"
-        dragConstraints={{ right: 0, left: -width }}
-        dragElastic={0.25}
-        className="scroll flex gap-4 cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-auto scrollbar-none"
-      >
+    <motion.div className="mt-4 bg-zinc-100 py-2 rounded-2xl overflow-hidden px-3">
+      <motion.div className="scroll flex gap-4 pb-2 cursor-grab active:cursor-grabbing snap-x snap-mandatory overflow-x-auto scrollbar-none">
         {banners.map((banner, index) => (
           <motion.div
             key={banner.id}

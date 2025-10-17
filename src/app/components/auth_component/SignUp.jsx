@@ -75,8 +75,8 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-6 bg-gray-50 overflow-y-auto">
-      <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-md flex-shrink-0">
+    <div className="fixed inset-0 bg-gray-50 flex items-center justify-center overflow-auto">
+      <div className="bg-white w-full max-w-md p-6 rounded-2xl flex-shrink-0">
         <div className="flex justify-center mb-4">
           <LogoImage />
         </div>

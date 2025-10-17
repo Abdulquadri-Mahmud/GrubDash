@@ -116,7 +116,7 @@ export default function ResetPassword() {
 
   return (
     <div className="fixed inset-0 bg-gray-50 flex items-center justify-center overflow-auto">
-      <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-md flex-shrink-0">
+      <div className="bg-white w-full max-w-md p-6 rounded-2xl flex-shrink-0">
         <div className="w-full mb-5 flex justify-center items-center">
           <LogoImage />
         </div>

@@ -7,7 +7,7 @@ export default function ConditionalBottomNav() {
   const pathname = usePathname();
 
   // Routes where BottomNav should NOT show
-  const noNavRoutes = ["/", "/auth/signin", "/auth/verify-account", "/auth/signup", "/auth/forgot-password", "/auth/reset-password"];
+  const noNavRoutes = ["/", "/auth/signin", "/auth/verify-account", "/auth/signup", "/auth/forgot-password", "/auth/reset-password", "/vendors/auth/register", "/vendors/auth/login"];
 
   // Only show nav on main pages
   const showNav = !noNavRoutes.includes(pathname);

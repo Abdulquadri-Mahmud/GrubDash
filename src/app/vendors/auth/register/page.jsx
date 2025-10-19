@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 /**
  * Put your cuisine + tag options here (adjust as needed)
@@ -609,6 +610,15 @@ export default function VendorRegisterPage() {
               )}
             </div>
           </div>
+          <p className="text-start text-gray-500 text-sm mt-3">
+            Already a vendor?{" "}
+            <Link
+              href="/vendors/auth/login"
+              className="text-[#FF6B00] font-medium hover:underline"
+            >
+              Sign in to your dashboard
+            </Link>
+          </p>
         </div>
 
         {/* modal */}

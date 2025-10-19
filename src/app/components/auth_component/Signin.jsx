@@ -142,6 +142,15 @@ export default function Signin() {
             Create one
           </Link>
         </p>
+        <p className="text-sm text-center mt-4">
+          Looking to grow your food business?{" "}
+          <Link
+            href="/vendors/auth/register"
+            className="text-orange-500 font-medium hover:underline"
+          >
+            Join the GrubDash Vendor Network
+          </Link>
+        </p>
       </div>
     </div>
   );

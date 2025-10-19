@@ -11,6 +11,7 @@ import {
   FiEye,
   FiEyeOff,
 } from "react-icons/fi";
+import Link from "next/link";
 
 const LogoImage = () => (
   <img
@@ -182,14 +183,23 @@ export default function Signup() {
           </p>
         )}
 
-        <p className="text-center text-gray-500 text-sm mt-6">
+        <p className="text-start text-gray-500 text-sm mt-3">
           Already have an account?{" "}
-          <a
+          <Link
             href="/auth/signin"
             className="text-[#FF6B00] font-medium hover:underline"
           >
             Sign in
-          </a>
+          </Link>
+        </p>
+        <p className="text-sm text-start mt-4">
+          Looking to grow your food business?{" "}
+          <Link
+            href="/vendors/auth/register"
+            className="text-orange-500 font-medium hover:underline"
+          >
+            Join the GrubDash Vendor Network
+          </Link>
         </p>
       </div>
     </div>

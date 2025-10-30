@@ -8,6 +8,7 @@ import QueryProvider from "./providers/QueryProvider";
 // import "leaflet/dist/leaflet.css";
 import AutoLogout from "./auto-logout/AutoLogout";
 import ConditionalBottomNav from "./components/conditional_bottom_nav/ConditionalBottomNav";
+import VendorsAutoLogout from "./auto-logout/VendorAutoLogout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -79,6 +80,7 @@ export default function RootLayout({ children }) {
           </ApiProvider>
         </CartProvider>
         <AutoLogout />
+        <VendorsAutoLogout />
         {/* 👇 This handles route-specific navbar visibility */}
         <ConditionalBottomNav />
       </body>

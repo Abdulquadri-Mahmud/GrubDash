@@ -7,10 +7,27 @@ export default function ConditionalBottomNav() {
   const pathname = usePathname();
 
   // Routes where BottomNav should NOT show
-  const noNavRoutes = ["/", "/auth/signin", "/auth/verify-account", "/auth/signup", "/auth/forgot-password", "/auth/reset-password", "/vendors/auth/register", "/vendors/auth/login"];
+  const noNavRoutes = [
+    "/",
+    "/auth/signin",
+    "/auth/verify-account",
+    "/auth/signup",
+    "/auth/forgot-password",
+    "/auth/reset-password",
+    "/vendors/auth/register",
+    "/vendors/auth/login",
+    "/vendors/dashboard",
+    "/vendors/profile",
+    "/vendors/my-foods",
+    "/vendors/create-food",
+  ];
 
-  // Only show nav on main pages
-  const showNav = !noNavRoutes.includes(pathname);
+  // ✅ Hide nav also on dynamic edit routes like /vendors/update-food/[id]
+  const shouldHideNav =
+    noNavRoutes.includes(pathname) ||
+    pathname.startsWith("/vendors/update-food/");
 
-  return showNav ? <BottomBar /> : null ;
+  const showNav = !shouldHideNav;
+
+  return showNav ? <BottomBar /> : null;
 }

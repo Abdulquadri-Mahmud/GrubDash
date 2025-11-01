@@ -19,6 +19,7 @@ import { useUserStorage } from "@/app/hooks/useUserStorage";
 import NoFoodsFound from "../food/NoFoodsFound";
 import { useApi } from "@/app/context/ApiContext";
 import Header2 from "../App_Header/Header2";
+import Link from 'next/link';
 
 export default function FoodSearchMobile() {
   const [foods, setFoods] = useState([]);

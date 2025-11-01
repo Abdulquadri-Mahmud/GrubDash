@@ -1,3 +1,5 @@
+"use client";
+
 import React, { Suspense } from 'react'
 import SearchPageSkeleton from '../components/skeletons/SearchPageSkeleton';
 import dynamic from 'next/dynamic';

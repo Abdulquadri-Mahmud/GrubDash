@@ -353,9 +353,9 @@ export default function FoodSearchMobile() {
                 }}
                 transition={{ duration: 0.25 }}
                 className="bg-white p-3 rounded-xl scroll shadow-md cursor-pointer"
-                onClick={() => router.push(`/food-details/${food._id}`)}
               >
-                <div className="relative scroll rounded-md overflow-hidden">
+                <Link href={`/food-details/${food._id}`}>
+                  <div className="relative scroll rounded-md overflow-hidden">
                   <img
                     src={
                       Array.isArray(food?.images)
@@ -386,6 +386,7 @@ export default function FoodSearchMobile() {
                       : "Address not available"}
                   </p>
                 </div>
+                </Link>
               </motion.div>
             ))}
           </div>

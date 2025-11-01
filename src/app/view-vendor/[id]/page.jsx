@@ -20,8 +20,10 @@ import Image from "next/image";
 import { useVendorForUserDisplay } from "@/app/hooks/useVendorQueries";
 import { useRouter } from "next/navigation";
 import ViewVendorSkeleton from "@/app/components/skeletons/ViewVendorSkeleton";
+import { useParams } from 'next/navigation';
 
 export default function ViewVendor({ params }) {
+  const params = useParams();
   const { id } = params;
   const { vendor, foods, isLoading } = useVendorForUserDisplay(id);
 

@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import ViewVendorSkeleton from "@/app/components/skeletons/ViewVendorSkeleton";
 import { useParams } from 'next/navigation';
 
-export default function ViewVendor({ params }) {
+export default function ViewVendor() {
   const params = useParams();
   const { id } = params;
   const { vendor, foods, isLoading } = useVendorForUserDisplay(id);

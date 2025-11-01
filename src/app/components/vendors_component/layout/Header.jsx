@@ -5,7 +5,7 @@ import VendorProfileImageSkeleton from "../../skeletons/VendorProfileImageSkelet
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   FaUtensils,
   FaClipboardList,
@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 import Logo from "../../logo/Logo";
 import { useState } from "react";
+import { useApi } from "@/app/context/ApiContext";
 
 const navItems = [
   {
@@ -62,11 +63,42 @@ export default function Header() {
   const {vendors, isLoading} = useVendors()
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname(); // e.g. "/vendors/my-foods"
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const {baseUrl} = useApi();
+
+  const router = useRouter();
 
   // determine active by checking if any path segment equals the nav href
   const pathSegments = (pathname || "/vendors") // ["vendors","my-foods"]
   const isSegmentActive = (href) => pathSegments.includes(href);
   
+  const handleLogout = async () => {
+    try {
+      setLogoutLoading(true);
+      const res = await fetch(`${baseUrl}/vendor/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.removeItem("vendorToken");
+        localStorage.removeItem("vendorToken");
+        router.push("/vendors/auth/login");
+      } else {
+        console.error("Logout failed:", data);
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      setLogoutLoading(false);
+    }
+  };
+
   return (
     <header className="flex justify-between items-center bg-white p-4">
       {/* Mobile toggle button */}
@@ -189,11 +221,7 @@ export default function Header() {
               </div>
 
               <div>
-                <button className="flex items-center gap-3 bg-gray-800 font-medium cursor-pointer text-red-300 hover:text-red-400 mt-6 transition w-full justify-start px-3 py-2 rounded-md" onClick={() => {
-                    console.log("logout mobile");
-                    setMobileOpen(false);
-                  }}
-                >
+                <button className="flex items-center gap-3 bg-gray-800 font-medium cursor-pointer text-red-300 hover:text-red-400 mt-6 transition w-full justify-start px-3 py-2 rounded-md" onClick={handleLogout}>
                   <FaSignOutAlt /> <span className="ml-2">Logout</span>
                 </button>
               </div>

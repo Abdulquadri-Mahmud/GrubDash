@@ -16,6 +16,7 @@ import {
 import Logo from "../../logo/Logo";
 import { PanelLeftClose, PanelRightClose } from "lucide-react";
 import { useVendors } from "@/app/hooks/useVendorQueries";
+import { useApi } from "@/app/context/ApiContext";
 
 const navItems = [
   {
@@ -61,10 +62,39 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hovered, setHovered] = useState(null); // tooltip state (nav name)
   const pathname = usePathname(); // e.g. "/vendors/my-foods"
-  const {vendors, isLoading} = useVendors()
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const {vendors, isLoading} = useVendors();
+  const {baseUrl} = useApi();
+
   // determine active by checking if any path segment equals the nav href
   const pathSegments = (pathname || "") // ["vendors","my-foods"]
   const isSegmentActive = (href) => pathSegments.includes(href);
+
+  const handleLogout = async () => {
+    try {
+      setLogoutLoading(true);
+      const res = await fetch(`${baseUrl}/vendor/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.removeItem("vendorToken");
+        localStorage.removeItem("vendorToken");
+        router.push("/vendors/auth/login");
+      } else {
+        console.error("Logout failed:", data);
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      setLogoutLoading(false);
+    }
+  };
 
   return (
     <>
@@ -186,14 +216,7 @@ export default function Sidebar() {
 
         {/* Bottom: Logout */}
         <div>
-          <button
-            className="flex items-center gap-3 text-gray-600 hover:text-red-600 mt-6 transition px-2 py-2 rounded-md w-full justify-start"
-            onClick={() => {
-              // placeholder: you can hook logout modal/action here
-              // e.g. setShowLogoutModal(true)
-              console.log("logout clicked");
-            }}
-          >
+          <button type="button" className="flex items-center gap-3 text-gray-600 hover:text-red-600 mt-6 transition px-2 py-2 rounded-md w-full justify-start" onClick={handleLogout}>
             <FaSignOutAlt className="text-lg" />
             {open && <span className="font-medium">Logout</span>}
           </button>

@@ -2,13 +2,24 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Star, StarHalf, Star as StarEmpty } from "lucide-react";
+import { MapPin, Star, StarHalf, Star as StarEmpty, Store } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
+import { useApi } from "@/app/context/ApiContext";
 
+// ✅ Get current day (e.g. "monday", "tuesday")
 const getCurrentDay = () => {
   return new Date().toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+};
+
+// ✅ Get current time in HH:mm format
+const getCurrentTime = () => {
+  const now = new Date();
+  return `${now.getHours().toString().padStart(2, "0")}:${now
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
 };
 
 export default function VendorList() {
@@ -16,15 +27,20 @@ export default function VendorList() {
   const router = useRouter();
   const [imgLoaded, setImgLoaded] = useState({}); // track each vendor
 
+  const {baseUrl} = useApi();
+
+  // ✅ Auto refresh every 60 seconds (60000 ms)
   const { data, isLoading } = useQuery({
     queryKey: ["vendors"],
     queryFn: async () => {
       const res = await fetch(
-        "https://grub-dash-api.vercel.app/api/admin/vendors/get-all"
+        `${baseUrl}/admin/vendors/get-all`
       );
       const json = await res.json();
       return json.vendors || [];
     },
+    refetchInterval: 60000, // <--- 🔄 auto-refresh every 1 minute
+    refetchOnWindowFocus: true, // also refresh when user comes back to tab
   });
 
   const [width, setWidth] = useState(0);
@@ -46,21 +62,27 @@ export default function VendorList() {
     return stars;
   };
 
+  // ✅ Determine if vendor is open
   const isOpen = (vendor) => {
     const day = getCurrentDay();
-    const today = vendor.openingHours?.[day];
-    if (!today) return false;
-    return !today.closed;
+    const todayHours = vendor.openHours?.[day]; // e.g. { open: "08:00", close: "22:00", closed: false }
+
+    if (!todayHours || todayHours.closed) return false;
+
+    const now = getCurrentTime();
+
+    // Compare time strings
+    return now >= todayHours.open && now <= todayHours.close;
   };
 
   if (isLoading) {
     return (
-      <div className="mt-8 px-3">
+      <div className="my-4 px-3">
         <h2 className="font-semibold text-lg mb-3 text-gray-800">Top Restaurants</h2>
         <div className="scroll flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory">
           {[1, 2, 3].map((i) => (
             <div key={i} className="min-w-[220px] rounded-2xl overflow-hidden bg-white shadow-sm snap-center">
-              <Skeleton height={120} />
+              <Skeleton height={80} />
               <div className="p-2">
                 <Skeleton width="70%" height={16} />
                 <Skeleton width="50%" height={14} />
@@ -73,7 +95,7 @@ export default function VendorList() {
   }
 
   return (
-    <motion.div className="mt-4 px-3 overflow-hidden" initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+    <motion.div className=" mt-4 overflow-hidden" initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
       <h2 className="pb-2 text-lg text-shadow-md font-medium text-gray-800">Top Restaurants</h2>
 
       <motion.div ref={scrollRef} className="cursor-grab active:cursor-grabbing overflow-x-auto no-scrollbar snap-x snap-mandatory scroll" whileTap={{ cursor: "grabbing" }}>
@@ -85,7 +107,7 @@ export default function VendorList() {
               whileTap={{ scale: 0.96 }}
               transition={{ duration: 0.3 }}
               className="bg-white mb-4 rounded-2xl shadow-sm min-w-[220px] overflow-hidden hover:shadow-md cursor-pointer snap-center flex-shrink-0"
-              onClick={() => router.push(`/restaurant-details/${encodeURIComponent(vendor._id)}`)}
+              onClick={() => router.push(`/view-vendor/${vendor._id}`)}
             >
               <div className="relative">
                 {!imgLoaded[vendor._id] && <Skeleton height={128} width="100%" />}
@@ -97,9 +119,17 @@ export default function VendorList() {
                 />
 
                 {/* Badges */}
-                <div className="absolute top-2 left-2 flex flex-col gap-1">
-                  {vendor.metadata?.featured && <span className="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full">Featured</span>}
-                  <span className={`${isOpen(vendor) ? "bg-green-500" : "bg-gray-400"} text-white text-[10px] px-2 py-0.5 rounded-full`}>
+                <div className="absolute top-2 left-2 flex justify-between w-full pr-4 gap-1">
+                  {vendor.metadata?.featured && (
+                    <span className="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full">
+                      Featured
+                    </span>
+                  )}
+                  <span
+                    className={`${
+                      isOpen(vendor) ? "bg-green-500" : "bg-red-500"
+                    } text-white text-[10px] px-2 py-0.5 rounded-full`}
+                  >
                     {isOpen(vendor) ? "Open" : "Closed"}
                   </span>
                 </div>
@@ -111,7 +141,10 @@ export default function VendorList() {
               </div>
 
               <div className="p-3">
-                <h3 className="font-medium text-gray-800 text-sm mb-1">{vendor.storeName}</h3>
+                <div className="flex items-center gap-1">
+                  <Store size={12} className="text-orange-500"/>
+                  <h3 className="font-medium text-gray-800 text-sm mb-1">{vendor.storeName}</h3>
+                </div>
                 <div className="flex items-center text-xs text-gray-500">
                   <MapPin size={12} className="mr-1" />
                   {vendor.address?.city}, {vendor.address?.state}

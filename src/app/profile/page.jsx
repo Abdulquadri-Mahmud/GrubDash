@@ -7,23 +7,24 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUser } from "../lib/api";
 import User_Profile from "../components/user_profile/User_Profile";
+import { useUserStorage } from "../hooks/useUserStorage";
 
 export default function ProfilePage() {
   const [token, setToken] = useState(undefined); // undefined while initializing
+  const {user} = useUserStorage()
 
   // Get token safely after mount (client-side only)
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    setToken(storedToken || null); // set null if no token
-  }, []);
+  // useEffect(() => {
+  //   setToken(user?.token || null); // set null if no token
+  // }, []);
 
-  // console.log("token:", token);
+  console.log("token:", user?.token);
 
   // Only start query when token exists
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["user", token],
-    queryFn: () => fetchUser(token),
-    enabled: !!token,
+    queryKey: ["user", user?.token],
+    queryFn: () => fetchUser(user?.token),
+    enabled: !!user?.token,
     retry: false, // avoid retrying if token invalid
   });
 
@@ -39,7 +40,7 @@ export default function ProfilePage() {
   const refreshUser = () => refetch();
 
   // Show loading placeholder while initializing token
-  if (token === undefined) {
+  if (user?.token === undefined) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         {/* <Header2 /> */}
@@ -48,8 +49,8 @@ export default function ProfilePage() {
     );
   }
 
-  // Show login prompt if no token
-  if (!token) {
+  // Show login prompt if no user?.token
+  if (!user?.token) {
     return (
       <div className="bg-zinc-50 min-h-screen font-display text-[#181410]">
         <Header2 />

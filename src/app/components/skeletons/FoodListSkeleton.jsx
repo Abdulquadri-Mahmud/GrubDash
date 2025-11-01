@@ -21,7 +21,7 @@ export default function FoodListSkeleton() {
     <div className="space-y-3">
 
       {/* Stats Skeleton */}
-      <div className="grid grid-cols-3 gap-2 mb-8">
+      <div className="grid grid-cols-3 gap-2 mb-8 scroll">
         {Array(3)
           .fill(null)
           .map((_, i) => (
@@ -45,14 +45,14 @@ export default function FoodListSkeleton() {
       </div>
 
       {/* Food Cards Skeleton */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 scroll gap-6">
         {skeletonArray.map((_, index) => (
           <motion.div
             key={index}
             variants={shimmer}
             initial="hidden"
             animate="visible"
-            className="bg-white rounded-2xl shadow-md overflow-hidden"
+            className="bg-white rounded-2xl scroll shadow-md overflow-hidden"
           >
             {/* Image Skeleton */}
             <div className="relative">

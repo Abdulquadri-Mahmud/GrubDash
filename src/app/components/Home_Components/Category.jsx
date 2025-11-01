@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
 
 const categories = [
-  { id: 1, name: "Rice", icon: "/category/rice.jpeg" },
+  { id: 1, name: "Rice Dishes", icon: "/category/rice.jpeg" },
   { id: 2, name: "Swallow", icon: "/category/swallow.jpg" },
   { id: 3, name: "Shawarma", icon: "/category/shawarma.jpg" },
   { id: 4, name: "Snacks", icon: "/category/snacks.webp" },
@@ -13,9 +14,9 @@ const categories = [
 
 export default function CategoryList() {
   const [loadedImages, setLoadedImages] = useState({});
-  const [pageLoaded, setPageLoaded] = useState(false); // track page load
+  const [pageLoaded, setPageLoaded] = useState(false);
+  const router = useRouter();
 
-  // Mark page as loaded
   useEffect(() => {
     setPageLoaded(true);
   }, []);
@@ -24,14 +25,23 @@ export default function CategoryList() {
     setLoadedImages((prev) => ({ ...prev, [id]: true }));
   };
 
+  const handleCategoryClick = (categoryName) => {
+    router.push(`/search?category=${encodeURIComponent(categoryName)}`);
+  };
+
   return (
     <div className="mt-3 px-3">
-      <h2 className="font-semibold text-shadow-2xs text-lg mb-3 text-gray-800">Categories</h2>
+      <h2 className="font-semibold text-lg mb-3 text-gray-800">
+        Categories
+      </h2>
       <div className="scroll flex gap-3 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-3">
         {categories.map((cat) => (
-          <div key={cat.id} className=" flex flex-col items-center bg-white shadow p-3 rounded-xl min-w-[80px] flex-shrink-0 snap-center">
+          <div
+            key={cat.id}
+            onClick={() => handleCategoryClick(cat.name)}
+            className="flex flex-col items-center bg-white shadow p-3 rounded-xl min-w-[80px] flex-shrink-0 snap-center cursor-pointer hover:scale-105 transition-transform"
+          >
             <div className="w-16 h-16 mb-1 relative">
-              {/* Show skeleton until page is loaded and image is ready */}
               {!loadedImages[cat.id] && pageLoaded && (
                 <Skeleton
                   width={64}

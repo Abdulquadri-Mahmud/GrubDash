@@ -6,6 +6,7 @@ import {
   getVendorById,
   updateVendor,
   deleteVendor,
+  fetchVendorForUserDisplay,
 } from "../utils/vendor/api/vendorProfileApi";
 import toast from "react-hot-toast";
 
@@ -100,4 +101,22 @@ export const useVendorById = (id) => {
   });
 
   return { vendor: data?.data, isLoading, isError };
+};
+
+// ✅ Custom hook using React Query
+export const useVendorForUserDisplay = (id) => {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["vendorDisplay", id],
+    queryFn: () => fetchVendorForUserDisplay(id),
+    enabled: !!id, // only fetch if id exists
+    staleTime: 1000 * 60 * 2, // 2 minutes cache
+    keepPreviousData: true,
+  });
+
+  return {
+    vendor: data?.data?.vendor || null,
+    foods: data?.data?.foods || [],
+    isLoading,
+    isError,
+  };
 };

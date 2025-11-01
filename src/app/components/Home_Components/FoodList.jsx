@@ -1,103 +1,128 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import Skeleton from "react-loading-skeleton";
+
+import { useFoods } from "@/app/hooks/useVendorFoodQuery";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Star, Utensils, Clock } from "lucide-react";
+import FoodDetailsModal from "../modals/FoodDetailsModal";
+import HomeFoodListSkeleton from "../skeletons/HomeFoodListSkeleton";
+import { useRouter } from "next/navigation";
+
+// Skeleton component with shimmer
+const Skeleton = ({ width = "100%", height = 24, className = "" }) => (
+  <div
+    className={`relative overflow-hidden bg-gray-200 dark:bg-gray-700 rounded ${className}`}
+    style={{ width, height }}
+  >
+    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer"></div>
+  </div>
+);
 
 export default function FoodList() {
-  const [foods, setFoods] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { foods, isLoading } = useFoods();
+  const [selectedFoodId, setSelectedFoodId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const accent = "#FF6600";
 
-  useEffect(() => {
-    // Simulate fetching data (like from your backend)
-    setTimeout(() => {
-      setFoods([
-        {
-          id: 1,
-          name: "Jollof Rice & Chicken",
-          price: 2500,
-          rating: 4.8,
-          image: "/foods/jollof.jpeg",
-        },
-        {
-          id: 2,
-          name: "Efo Riro & Pounded Yam",
-          price: 3000,
-          rating: 4.9,
-          image: "/images/efo-riro.jpg",
-        },
-        {
-          id: 3,
-          name: "Shawarma Deluxe",
-          price: 2000,
-          rating: 4.7,
-          image: "/images/shawarma.jpg",
-        },
-      ]);
-      setLoading(false);
-    }, 1500);
-  }, []);
+  const router = useRouter()
 
-  if (loading) {
+  // Group foods by category
+  const foodsByCategory = useMemo(() => {
+    if (!foods?.data) return {};
+    return foods.data.reduce((acc, food) => {
+      const cat = food.category || "Uncategorized";
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(food);
+      return acc;
+    }, {});
+  }, [foods]);
+
+  if (isLoading)
     return (
-      <div className="mt-8">
-        <h2 className="font-semibold text-lg mb-3 text-gray-800">
-          Popular Near You
-        </h2>
-        <div className="grid grid-cols-2 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-2xl overflow-hidden">
-              <Skeleton height={120} />
-              <div className="p-2">
-                <Skeleton width="80%" height={16} />
-                <Skeleton width="40%" height={14} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <HomeFoodListSkeleton/>
     );
-  }
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={{
-        hidden: {},
-        visible: { transition: { staggerChildren: 0.15 } },
-      }}
-      className="mt-8"
-    >
-      <h2 className="font-semibold text-lg mb-3 text-gray-800">
-        Popular Near You
-      </h2>
+    <div className="space-y-3 flex-1 mt-2">
+      {Object.entries(foodsByCategory).map(([category, foods]) => (
+        <div key={category} className="space-y-3 bg-white md:p-3 p-2 rounded-xl">
+          <h2 className="text-lg font-semibold text-gray-800">{category}</h2>
+          <div className="flex md:space-x-4 space-x-2 scroll overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scroll-smooth touch-pan-x">
+            {foods.map((food) => (
+              <motion.div
+                key={food._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{
+                  scale: 1.03,
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+                }}
+                transition={{ duration: 0.25 }}
+                className="bg-white p-2 rounded-md shadow-md min-w-[220px] cursor-pointer snap-start"
+                onClick={() => router.push(`/food-details/${food._id}`)}
+              >
+                {/* Image */}
+                <div className="relative rounded-md overflow-hidden">
+                  <img
+                    src={food.images?.[0]?.url || "/placeholder.jpg"}
+                    alt={food.name}
+                    className="w-full h-30 object-cover rounded-md"
+                  />
+                  <span
+                    className={`absolute top-2 right-2 text-xs px-2 py-1 rounded-full ${
+                      food.available
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-400 text-white"
+                    }`}
+                  >
+                    {food.available ? "Available" : "Unavailable"}
+                  </span>
+                </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        {foods.map((food) => (
-          <motion.div
-            key={food.id}
-            variants={{
-              hidden: { opacity: 0, y: 40 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="bg-white rounded-2xl overflow-hidden shadow-sm"
-          >
-            <img
-              src={food.image}
-              alt={food.name}
-              className="h-32 w-full object-cover"
-            />
-            <div className="p-2">
-              <h3 className="font-medium text-sm text-gray-800">{food.name}</h3>
-              <p className="text-[#FF6B00] font-semibold text-sm">
-                ₦{food.price.toLocaleString()}
-              </p>
-              <p className="text-xs text-gray-500">⭐ {food.rating}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
+                {/* Details */}
+                <div className="mt-2">
+                  <h3 className="truncate text-md font-semibold text-gray-800">
+                    {food.name}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-1 truncate">
+                    {food.vendor?.storeName || "Unknown Store"}
+                  </p>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-1 text-yellow-500">
+                      <Star size={14} />
+                      <span className="text-xs">
+                        {food.rating} ({food.ratingCount})
+                      </span>
+                    </div>
+                    <span className="text-xs font-medium text-gray-700">
+                      ₦{(food.price || 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <Utensils size={12} /> {food.category || "Uncategorized"}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock size={12} /> {food.estimatedDeliveryTime} mins
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {/* Modal */}
+      <AnimatePresence>
+        {selectedFoodId && (
+          <FoodDetailsModal
+            foodId={selectedFoodId}
+            open={isModalOpen}
+            setOpen={setIsModalOpen}
+          />
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

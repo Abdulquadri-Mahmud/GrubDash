@@ -54,6 +54,18 @@ export const getVendorById = async (id) => {
   return res.data;
 };
 
+// ✅ API call (pure function)
+export const fetchVendorForUserDisplay = async (id) => {
+  const token = getToken();
+  const res = await api.get(`/vendor?id=${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data; // returns { success, data: { vendor, foods } }
+};
+
 export const createVendor = async (data) => {
   const token = getToken();
   const res = await api.post("/create", data, {

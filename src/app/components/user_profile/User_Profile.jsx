@@ -39,7 +39,7 @@ const User_Profile = ({ userData, isLoading, onProfileUpdate }) => {
   const { clearUser } = useUserStorage();
   const fileInputRef = useRef(null);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
 
   const [userState, setUserState] = useState({
     firstname: "",
@@ -174,7 +174,7 @@ const User_Profile = ({ userData, isLoading, onProfileUpdate }) => {
       });
       const data = await res.json();
       if (data.success) {
-        localStorage.removeItem("token");
+        localStorage.removeItem("userToken");
         clearUser();
         router.push("/auth/signin");
       } else {

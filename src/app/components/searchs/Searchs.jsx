@@ -261,12 +261,12 @@ export default function FoodSearchMobile() {
       <div className="flex flex-col p-2 space-y-4">
 
       {/* 🏠 Address Modal */}
-      <AddressModal
+      {/* <AddressModal
         isOpen={showAddressModal}
         onClose={() => setShowAddressModal(false)}
         onSave={handleAddressUpdate}
         loading={updating}
-      />
+      /> */}
         {/* 🔍 Search Input */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}

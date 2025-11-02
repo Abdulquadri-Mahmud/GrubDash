@@ -4,7 +4,7 @@ import Header2 from "@/app/components/App_Header/Header2";
 import AddToCartModal from "@/app/components/Cart/AddToCartModal";
 import FoodDetailsSkeleton from "@/app/components/skeletons/FoodDetailsSkeleton";
 import { useFoodById } from "@/app/hooks/useVendorFoodQuery";
-import { getVendorOpenStatus } from "@/app/utils/vendor/api/vendor-time/vendorTime";
+// import { getVendorOpenStatus } from "@/app/utils/vendor/api/vendor-time/vendorTime";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Utensils, Star, Clock, Tag, Flame, ArrowLeft, Truck, ChevronRight } from "lucide-react";
@@ -43,9 +43,9 @@ export default function FoodDetails() {
     );
   };
 
-  const openingMessage = data?.vendor?.openingHours
-    ? getVendorOpenStatus(data.vendor.openingHours)
-    : "Opening hours not available.";
+  // const openingMessage = data?.vendor?.openingHours
+  //   ? getVendorOpenStatus(data.vendor.openingHours)
+  //   : "Opening hours not available.";
 
   const handleViewVendor = () => {
     if (data?.vendor?._id) {
@@ -103,7 +103,7 @@ export default function FoodDetails() {
               size={15}
             />
             <p className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition flex items-center">
-              {openingMessage}
+              {/* {openingMessage} */}
               <ChevronRight size={16} className="ml-1" />
             </p>
           </motion.div>

@@ -13,7 +13,10 @@ import { TbCurrencyNaira } from "react-icons/tb";
 
 export default function FoodDetails() {
   // const { foodId } = use(params); // ✅ get ID from route
-  const { foodId } = useParams()
+  const { foodId } = useParams();
+
+  console.log("🆔 FoodId:", foodId);
+  
   const { food, isLoading, isError } = useFoodById(foodId);
 
   const router = useRouter();

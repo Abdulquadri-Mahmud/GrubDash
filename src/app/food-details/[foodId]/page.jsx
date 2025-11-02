@@ -5,7 +5,7 @@ import AddToCartModal from "@/app/components/Cart/AddToCartModal";
 import FoodDetailsSkeleton from "@/app/components/skeletons/FoodDetailsSkeleton";
 import { useFoodById } from "@/app/hooks/useVendorFoodQuery";
 import { getVendorOpenStatus } from "@/app/utils/vendor/api/vendor-time/vendorTime";
-import { getFoodById } from "@/app/utils/vendor/api/vendorFoodApi";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Utensils, Star, Clock, Tag, Flame, ArrowLeft, Truck, ChevronRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";

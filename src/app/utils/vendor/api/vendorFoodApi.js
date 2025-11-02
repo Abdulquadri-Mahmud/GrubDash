@@ -1,4 +1,3 @@
-"use client";
 import axios from "axios";
 
 // ✅ Base URL for all food-related endpoints
@@ -6,11 +5,16 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // ✅ Safe token retrieval (client-side only)
 const getToken = () => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("vendorToken");
+  try {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("vendorToken");
+    }
+  } catch (err) {
+    console.error("Token read error:", err);
   }
   return null;
 };
+
 
 // ✅ Create reusable axios instance
 export const api = axios.create({

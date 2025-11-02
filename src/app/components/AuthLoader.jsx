@@ -10,7 +10,7 @@ export default function AuthLoader() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("userToken");
       if (!token) {
         setTimeout(() => router.push("/auth/signin"), 1500); // show splash briefly
         return;

@@ -14,33 +14,33 @@ export default function ProfilePage() {
   const {user} = useUserStorage()
 
   // Get token safely after mount (client-side only)
-  // useEffect(() => {
-  //   setToken(user?.token || null); // set null if no token
-  // }, []);
+  useEffect(() => {
+    setToken(user?.token || null); // set null if no token
+  }, []);
 
-  console.log("token:", user?.token);
+  // console.log("token:", user?.token);
 
   // Only start query when token exists
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["user", user?.token],
-    queryFn: () => fetchUser(user?.token),
-    enabled: !!user?.token,
+    queryKey: ["user", token],
+    queryFn: () => fetchUser(token),
+    enabled: !!token,
     retry: false, // avoid retrying if token invalid
   });
 
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    if (data?.user) {
+    if (token) {
       setUserData(data.user);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user", JSON.stringify(token));
     }
   }, [data]);
 
   const refreshUser = () => refetch();
 
   // Show loading placeholder while initializing token
-  if (user?.token === undefined) {
+  if (token === undefined) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         {/* <Header2 /> */}
@@ -49,8 +49,8 @@ export default function ProfilePage() {
     );
   }
 
-  // Show login prompt if no user?.token
-  if (!user?.token) {
+  // Show login prompt if no token
+  if (!token) {
     return (
       <div className="bg-zinc-50 min-h-screen font-display text-[#181410]">
         <Header2 />

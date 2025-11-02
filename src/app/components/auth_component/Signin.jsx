@@ -44,6 +44,8 @@ export default function Signin() {
 
       const data = await res.json();
 
+      console.log(data);
+
       if (res.ok) {
         setMessage("Signin successful! 🎉 Redirecting...");
         router.push(

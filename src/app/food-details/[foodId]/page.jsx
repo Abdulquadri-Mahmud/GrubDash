@@ -7,12 +7,13 @@ import { useFoodById } from "@/app/hooks/useVendorFoodQuery";
 import { getVendorOpenStatus } from "@/app/utils/vendor/api/vendor-time/vendorTime";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Utensils, Star, Clock, Tag, Flame, ArrowLeft, Truck, ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { use, useRef, useState } from "react";
 import { TbCurrencyNaira } from "react-icons/tb";
 
-export default function FoodDetails({ params }) {
-  const { foodId } = use(params); // ✅ get ID from route
+export default function FoodDetails() {
+  // const { foodId } = use(params); // ✅ get ID from route
+  const { foodId } = useParams()
   const { food, isLoading, isError } = useFoodById(foodId);
 
   const router = useRouter();

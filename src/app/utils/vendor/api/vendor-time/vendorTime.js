@@ -1,3 +1,5 @@
+"use client";
+
 // utils/vendorTime.js
 export function getVendorOpenStatus(openingHours) {
   if (!openingHours) return "Opening hours not available.";

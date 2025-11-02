@@ -5,7 +5,9 @@ import SearchPageSkeleton from '../components/skeletons/SearchPageSkeleton';
 import dynamic from 'next/dynamic';
 
 const FoodSearchMobile = dynamic(
-  () => import("../components/searchs/Searchs"));
+  () => import("../components/searchs/Searchs"),
+  { ssr: false, suspense: true }
+);
 
 export default function page() {
   return (

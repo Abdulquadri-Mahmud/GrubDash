@@ -8,16 +8,6 @@ import FoodDetailsModal from "../modals/FoodDetailsModal";
 import HomeFoodListSkeleton from "../skeletons/HomeFoodListSkeleton";
 import { useRouter } from "next/navigation";
 
-// Skeleton component with shimmer
-const Skeleton = ({ width = "100%", height = 24, className = "" }) => (
-  <div
-    className={`relative overflow-hidden bg-gray-200 dark:bg-gray-700 rounded ${className}`}
-    style={{ width, height }}
-  >
-    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer"></div>
-  </div>
-);
-
 export default function FoodList() {
   const { foods, isLoading } = useFoods();
   const [selectedFoodId, setSelectedFoodId] = useState(null);

@@ -21,8 +21,9 @@ import { useVendorForUserDisplay } from "@/app/hooks/useVendorQueries";
 import { useRouter } from "next/navigation";
 import ViewVendorSkeleton from "@/app/components/skeletons/ViewVendorSkeleton";
 
-export default function ViewVendor({ params }) {
+export default function ViewVendor({params}) {
   const { id } = use(params);
+  
   const { vendor, foods, isLoading } = useVendorForUserDisplay(id);
 
   const [isModalOpen, setIsModalOpen] = useState(false);

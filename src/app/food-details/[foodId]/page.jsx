@@ -24,6 +24,8 @@ export default function FoodDetails() {
   const accent = "#FF6600";
   const data = food?.data;
 
+  console.log("Food Details Data:", data);
+
   // ✅ this runs after the first paint
   useEffect(() => {
     setIsClient(true);

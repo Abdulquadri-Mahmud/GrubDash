@@ -344,8 +344,8 @@ export default function FoodSearchMobile() {
           <NoFoodsFound />
         ) : (
           <div className="grid grid-cols-2 md:gap-4 gap-2">
-            <Link href={`/food-details/${food._id}`}>  
               {foods.map((food) => (
+              <Link href={`/food-details/${food._id}`}>  
                 <motion.div key={food.slug} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{   scale: 1.03,
                     boxShadow: "0 8px 20px rgba(0,0,0,0.1)"
                   }} transition={{ duration: 0.25 }} className="bg-white p-3 rounded-xl scroll shadow-md cursor-pointer">
@@ -381,8 +381,8 @@ export default function FoodSearchMobile() {
                     </p>
                   </div>
                 </motion.div>
+              </Link>
               ))}
-            </Link>
           </div>
         )}
       </div>

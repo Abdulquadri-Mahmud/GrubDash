@@ -19,7 +19,8 @@ import { useUserStorage } from "@/app/hooks/useUserStorage";
 import NoFoodsFound from "../food/NoFoodsFound";
 import { useApi } from "@/app/context/ApiContext";
 import Header2 from "../App_Header/Header2";
-import Link from "next/link";
+
+import Link from 'next/link';
 
 export default function FoodSearchMobile() {
   const [foods, setFoods] = useState([]);
@@ -350,10 +351,10 @@ export default function FoodSearchMobile() {
                 animate={{ opacity: 1, y: 0 }}
                 whileHover={{
                   scale: 1.03,
-                  boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.1)"
                 }} transition={{ duration: 0.25 }} className="bg-white p-3 rounded-xl scroll shadow-md cursor-pointer">
-                <Link href={`/food-details/${food._id}`}>
-                  <div className="relative scroll rounded-md overflow-hidden">
+                {/* <Link href={`/food-details/${food._id}`}> */}
+                  {/* <div className="relative scroll rounded-md overflow-hidden">
                     <img
                       src={
                         Array.isArray(food?.images)
@@ -363,9 +364,9 @@ export default function FoodSearchMobile() {
                       alt={food?.name}
                       className="w-full h-36 object-cover rounded-md"
                     />
-                  </div>
+                  </div> */}
 
-                  <div>
+                  {/* <div>
                     <h3 className="text-md font-semibold text-gray-800 truncate">
                       {food.name}
                     </h3>
@@ -383,7 +384,41 @@ export default function FoodSearchMobile() {
                         ? `${food.vendor.address.street}, ${food.vendor.address.city}, ${food.vendor.address.state}`
                         : "Address not available"}
                     </p>
+                  </div> */}
+                {/* }} */}
+                
+                <Link href={`/food-details/${food._id}`}>
+                  <div className="relative scroll rounded-md overflow-hidden">
+                  <img
+                    src={
+                      Array.isArray(food?.images)
+                        ? food.images[0]?.url
+                        : food?.image || food?.image
+                    }
+                    alt={food?.name}
+                    className="w-full h-36 object-cover rounded-md"
+                  />
+                </div>
+
+                <div>
+                  <h3 className="text-md font-semibold text-gray-800 truncate">
+                    {food.name}
+                  </h3>
+
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="flex items-center gap-1 text-sm font-medium text-gray-700 truncate">
+                      <Store className="text-[#FF6600] w-4" />
+                      {food?.vendor?.storeName || "Unknown Vendor"}
+                    </p>
                   </div>
+
+                  <p className=" text-xs text-gray-500 flex items-center gap-1 mt-1">
+                    <MapPin size={12} className="text-orange-500" />
+                    {food?.vendor?.address
+                      ? `${food.vendor.address.street}, ${food.vendor.address.city}, ${food.vendor.address.state}`
+                      : "Address not available"}
+                  </p>
+                </div>
                 </Link>
               </motion.div>
             ))}

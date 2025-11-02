@@ -88,6 +88,12 @@ export default function VerifyAccount() {
       }
 
       saveUser(data);
+
+      // ✅ Extract token and save to localStorage
+      if (data?.token) {
+        localStorage.setItem("userToken", data.token);
+      }
+
       toast.success("Verified Successfully! Redirecting...");
       setTimeout(() => router.push("/home"), 1000);
     } catch (error) {

@@ -15,7 +15,7 @@ export default function FoodList() {
   const accent = "#FF6600";
 
   const router = useRouter()
-
+ 
   // Group foods by category
   const foodsByCategory = useMemo(() => {
     if (!foods?.data) return {};

@@ -9,25 +9,25 @@ import { getVendorOpenStatus } from "@/app/utils/vendor/api/vendor-time/vendorTi
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Utensils, Star, Clock, Tag, Flame, ArrowLeft, Truck, ChevronRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { use, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { TbCurrencyNaira } from "react-icons/tb";
 
 export default function FoodDetails() {
-  // const { foodId } = use(params); // ✅ get ID from route
-  const { foodId } = useParams();
-
-  console.log("🆔 FoodId:", foodId);
-
-  const { food, isLoading, isError } = useFoodById(foodId);
-
-  const router = useRouter();
-
+  const [isClient, setIsClient] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
+  const [selectedFood, setSelectedFood] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { foodId } = useParams();
+  const { food, isLoading, isError } = useFoodById(foodId);
+  const router = useRouter();
   const dragRef = useRef(null);
   const accent = "#FF6600";
   const data = food?.data;
 
-  // console.log(food)
+  // ✅ this runs after the first paint
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const nextImage = () => {
     if (!data?.images?.length) return;
@@ -42,17 +42,14 @@ export default function FoodDetails() {
   };
 
   const openingMessage = data?.vendor?.openingHours
-  ? getVendorOpenStatus(data.vendor.openingHours)
-  : "Opening hours not available.";
+    ? getVendorOpenStatus(data.vendor.openingHours)
+    : "Opening hours not available.";
 
-    const handleViewVendor = () => {
-      if (data?.vendor?._id) {
-        router.push(`/view-vendor/${data.vendor._id}`);
-      }
-    };
-
-  const [selectedFood, setSelectedFood] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleViewVendor = () => {
+    if (data?.vendor?._id) {
+      router.push(`/view-vendor/${data.vendor._id}`);
+    }
+  };
 
   const handleAddClick = (food) => {
     setSelectedFood(food);
@@ -61,8 +58,12 @@ export default function FoodDetails() {
 
   const handleAddToCart = (item) => {
     console.log("Added to cart:", item);
-    // TODO: integrate your global cart context or localStorage
   };
+
+  // ✅ Safe render condition — all hooks have already run
+  if (!isClient) {
+    return <div className="min-h-screen bg-white">Loading...</div>;
+  }
 
   return (
     <>

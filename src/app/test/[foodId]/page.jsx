@@ -3,6 +3,7 @@
 export default async function FoodDetailsPage({ params }) {
   const { foodId } = params;
 
+  console.log("Food ID:", foodId);
   // Example fetch
   // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/foods/${foodId}`, {
   //   cache: "no-store", // so it fetches fresh data

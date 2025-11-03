@@ -1,6 +1,6 @@
 "use client";
 
-export default async function FoodDetailsPage({ params }) {
+export default async function Page({ params }) {
   const { foodId } = params;
 
   console.log("Food ID:", foodId);

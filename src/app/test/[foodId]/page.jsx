@@ -1,4 +1,4 @@
-// app/food-details/[foodId]/page.jsx
+"use client";
 
 export default async function FoodDetailsPage({ params }) {
   const { foodId } = params;

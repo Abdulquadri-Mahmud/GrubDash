@@ -3,7 +3,7 @@
 // Skeleton with shimmer
 const Skeleton = ({ width = "100%", height = 24, className = "" }) => (
   <div
-    className={`relative overflow-hidden bg-gray-200 dark:bg-gray-700 rounded ${className}`}
+    className={`relative overflow-hidden scroll bg-gray-200 dark:bg-gray-700 rounded ${className}`}
     style={{ width, height }}
   >
     <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer"></div>
@@ -12,7 +12,7 @@ const Skeleton = ({ width = "100%", height = 24, className = "" }) => (
 
 export default function HomeFoodListSkeleton({ categories = 2, itemsPerCategory = 3 }) {
   return (
-    <div className="space-y-3 flex-1 px-3 scroll">
+    <div className="space-y-3 flex-1 scroll">
       {Array.from({ length: categories }).map((_, catIdx) => (
         <div key={catIdx}>
           <div className="flex gap-2 scroll overflow-x-auto snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scroll-smooth">

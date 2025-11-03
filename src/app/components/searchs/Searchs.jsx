@@ -9,387 +9,206 @@ import {
   Search,
   SlidersHorizontal,
   Store,
-  X,
+  Loader2,
 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
-import AddressModal from "../modals/AddressModal";
-import HomeFoodListSkeleton from "../skeletons/HomeFoodListSkeleton";
-import { useUserStorage } from "@/app/hooks/useUserStorage";
-import NoFoodsFound from "../food/NoFoodsFound";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useApi } from "@/app/context/ApiContext";
-import Header2 from "../App_Header/Header2";
 
-import Link from 'next/link';
+export const dynamic = "force-dynamic"; // ✅ Ensures no static caching on Vercel
 
 export default function FoodSearchMobile() {
-  const [foods, setFoods] = useState([]);
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("");
-  const [trending, setTrending] = useState([]);
-  const [showAddressModal, setShowAddressModal] = useState(false);
-  const [updating, setUpdating] = useState(false);
-
   const { baseUrl } = useApi();
   const router = useRouter();
-  const { user, updateUser } = useUserStorage();
-
   const searchParams = useSearchParams();
+
+  const [foods, setFoods] = useState([]);
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
+  const [error, setError] = useState(null);
+
   const selectedCategory = searchParams.get("category");
 
-  // 🧩 Show address modal if user has no city
+  // ✅ Ensure client hydration before running effects
+  useEffect(() => setHydrated(true), []);
+
+  // ✅ Fetch foods based on category or search query
   useEffect(() => {
-    if (!user?.user?.address?.city) {
-      setShowAddressModal(true);
-    }
-  }, [user]);
+    if (!hydrated) return; // wait for hydration
 
-  // ✅ Address update handler
-  const handleAddressUpdate = async (address) => {
-    try {
-      setUpdating(true);
-
-      const res = await fetch(`${baseUrl}/user/auth/update-profile`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-        body: JSON.stringify({ addresses: [address] }), // ✅ push as array
-      });
-
-      const data = await res.json();
-      console.log("Update response:", data);
-
-      if (!data.success) throw new Error(data.message || "Failed to update");
-
-      toast.success("Address updated successfully!");
-
-      updateUser(data); // ✅ sync user data
-      window.location.reload(); // reload foods based on city
-    } catch (err) {
-      toast.error(err.message || "Error updating address");
-    } finally {
-      setUpdating(false);
-    }
-  };
-
-
-  // ✅ All categories (same as before)
-  const allCategories = [
-    "Rice Dishes",
-    "Swallow",
-    "Soups & Stews",
-    "Beans Dishes",
-    "Yam Dishes",
-    "Plantain Dishes",
-    "Pasta",
-    "Snacks",
-    "Grills & Barbecue",
-    "Shawarma",
-    "Breakfast",
-    "Drinks",
-    "Desserts",
-    "Seafood",
-    "Vegetarian",
-    "Salads",
-    "Small Chops",
-    "Porridge",
-    "Native Delicacies",
-    "Others",
-  ];
-
-  const getCategoryIcon = (cat) => {
-    const c = cat.toLowerCase();
-
-    const categoryImages = {
-      "rice dishes": "/category/rice.jpeg",
-      swallow: "/category/swallow.jpg",
-      "soups & stews": "/category/soup.jpg",
-      "beans dishes": "/category/beans.jpg",
-      "yam dishes": "/category/yam.jpg",
-      "plantain dishes": "/category/plantain.jpg",
-      pasta: "/category/pasta.jpg",
-      snacks: "/category/snack.jpg",
-      "grills & barbecue": "/category/grill.jpg",
-      shawarma: "/category/shawarma.jpg",
-      drinks: "/category/drinks.jpg",
-      "small chops": "/category/smallchops.jpg",
-      porridge: "/category/porridge.jpg",
-      "native delicacies": "/category/native.jpg",
-      others: "/category/others.jpg",
-    };
-
-    const matchedKey = Object.keys(categoryImages).find((key) =>
-      c.includes(key)
-    );
-
-    const imageSrc =
-      matchedKey ? categoryImages[matchedKey] : "/category/default.jpg";
-
-    return (
-      <img
-        src={imageSrc}
-        alt={cat}
-        className="w-8 h-8 object-cover rounded-full group-hover:border-orange-500 transition-all duration-300"
-      />
-    );
-  };
-
-  // ✅ Fetch all foods
-  useEffect(() => {
     const fetchFoods = async () => {
       try {
         setLoading(true);
-        let res;
+        setError(null);
 
-        if (selectedCategory) {
-          res = await axios.get(`${baseUrl}/search/food/search`, {
-            params: { category: selectedCategory },
-          });
-          setActiveCategory(selectedCategory);
-        } else {
-          res = await axios.get(`${baseUrl}/search/food/search`, {
-            params: { q: "" },
-          });
-        }
+        const params = {};
+        if (selectedCategory) params.category = selectedCategory;
+        if (query) params.q = query;
+
+        const res = await axios.get(`${baseUrl}/search/food/search`, {
+          params,
+        });
 
         setFoods(res.data.data || []);
+        if (selectedCategory) setActiveCategory(selectedCategory);
       } catch (err) {
         console.error("Fetch Foods Error:", err);
+        setError("Failed to load foods. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchFoods();
-  }, [baseUrl, selectedCategory]);
+  }, [baseUrl, hydrated, selectedCategory, query]);
 
-  // ✅ Fetch trending
-  useEffect(() => {
-    const fetchTrending = async () => {
-      try {
-        const res = await axios.get(`${baseUrl}/search/food/trending`, {
-          params: { limit: 8 },
-        });
-        setTrending(res.data.trending || []);
-      } catch (err) {
-        console.error("Trending Error:", err);
-      }
-    };
-    fetchTrending();
-  }, [baseUrl]);
-
-  // ✅ Handle typing
-  useEffect(() => {
-    const fetchSearch = async () => {
-      if (query.trim() === "") {
-        try {
-          setLoading(true);
-          const res = await axios.get(`${baseUrl}/search/food/search`, {
-            params: { q: "" },
-          });
-          setFoods(res.data.data || []);
-          setActiveCategory("");
-        } catch (err) {
-          console.error("Reset Foods Error:", err);
-        } finally {
-          setLoading(false);
-        }
-        return;
-      }
-
-      if (query.length >= 2) {
-        try {
-          setLoading(true);
-          const res = await axios.get(`${baseUrl}/search/food/autocomplete`, {
-            params: { q: query },
-          });
-          setFoods(res.data.suggestions || []);
-          setActiveCategory("");
-        } catch (err) {
-          console.error("Autocomplete Error:", err);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    const timeout = setTimeout(fetchSearch, 300);
-    return () => clearTimeout(timeout);
-  }, [query, baseUrl]);
-
-  // ✅ Category handler
+  // ✅ Handle category click and update URL
   const handleCategoryClick = async (category) => {
     setActiveCategory(category);
     setQuery("");
 
-    // ✅ Update query params in URL
     router.push(`?category=${encodeURIComponent(category)}`);
+  };
+
+  // ✅ Search manually
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
 
     try {
       setLoading(true);
       const res = await axios.get(`${baseUrl}/search/food/search`, {
-        params: { category },
+        params: { q: query },
       });
       setFoods(res.data.data || []);
+      setActiveCategory("");
+      router.push("?"); // clear category param
     } catch (err) {
-      console.error("Category Fetch Error:", err);
+      console.error("Search Error:", err);
+      setError("Search failed. Try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-
-  // ✅ Trending click
-  const handleTrendingClick = async (term) => {
-    setQuery(term);
-    setActiveCategory("");
-    try {
-      setLoading(true);
-      const res = await axios.get(`${baseUrl}/search/food/autocomplete`, {
-        params: { q: term },
-      });
-      setFoods(res.data.suggestions || []);
-    } catch (err) {
-      console.error("Trending Fetch Error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const categories = [
+    "Rice Dishes",
+    "Swallow",
+    "Grilled",
+    "Soups",
+    "Pasta",
+    "Snacks",
+  ];
 
   return (
-    <div className="">
-      <Header2 />
-      <Toaster position="top-center" />
-      <div className="flex flex-col p-2 space-y-4">
-
-      {/* 🏠 Address Modal */}
-      {/* <AddressModal
-        isOpen={showAddressModal}
-        onClose={() => setShowAddressModal(false)}
-        onSave={handleAddressUpdate}
-        loading={updating}
-      /> */}
-        {/* 🔍 Search Input */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          className="relative"
-        >
-          <Search
-            className="text-gray-400 absolute top-4 left-2"
-            size={20}
-          />
+    <div className="min-h-screen bg-gray-50">
+      <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
+        {/* Search Bar */}
+        <form onSubmit={handleSearch} className="flex items-center gap-2 p-3">
+          <Search className="text-gray-500" />
           <input
             type="text"
-            placeholder="Search for food, categories or vendor..."
-            className="w-full rounded-xl p-3 pl-8 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Search for food..."
+            className="flex-1 outline-none bg-transparent text-gray-800 placeholder-gray-400"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <SlidersHorizontal
-            className="text-gray-500 absolute top-4 right-3"
-            size={20}
-          />
-        </motion.div>
+          <button
+            type="submit"
+            className="p-2 bg-orange-500 rounded-lg text-white hover:bg-orange-600 transition-colors"
+          >
+            <SlidersHorizontal size={18} />
+          </button>
+        </form>
 
-        {/* 🔥 Trending */}
-        {trending.length > 0 && (
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
-              <Flame className="text-orange-500" /> Trending Searches
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {trending.map((trend) => (
-                <motion.button
-                  key={trend._id}
-                  onClick={() => handleTrendingClick(trend.term)}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-orange-50 text-orange-600 border border-orange-200 px-3 py-1.5 rounded-full text-sm hover:bg-orange-100"
-                >
-                  {trend.term}
-                </motion.button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 🍽️ Categories */}
-        <div className="flex overflow-x-auto scroll gap-3 no-scrollbar pt-2 pb-1 px-1">
-          {allCategories.map((cat) => (
+        {/* Categories */}
+        <div className="flex overflow-x-auto no-scrollbar gap-2 px-3 pb-3 mt-2">
+          {categories.map((category) => (
             <motion.button
-              key={cat}
-              onClick={() => handleCategoryClick(cat)}
-              whileTap={{ scale: 0.95 }}
-              className={`group flex flex-col items-center justify-center min-w-[85px] px-1 py-2 rounded-2xl shadow-sm border transition-all duration-300 ${
-                activeCategory === cat
-                  ? "bg-orange-500 text-white border-orange-500 scale-105 shadow-md"
-                  : "bg-orange-50 text-orange-700 border-orange-100 hover:bg-orange-100"
+              whileTap={{ scale: 0.9 }}
+              key={category}
+              onClick={() => handleCategoryClick(category)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap border transition-colors ${
+                activeCategory === category
+                  ? "bg-orange-500 text-white border-orange-500"
+                  : "bg-white text-gray-700 border-gray-300"
               }`}
             >
-              {getCategoryIcon(cat)}
-              <span
-                className={`text-[11px] mt-2 font-semibold text-center leading-tight ${
-                  activeCategory === cat ? "text-white" : "text-gray-700"
-                }`}
-              >
-                {cat}
-              </span>
+              <Flame
+                size={16}
+                className={
+                  activeCategory === category
+                    ? "text-white"
+                    : "text-orange-500"
+                }
+              />
+              <span className="text-sm font-medium">{category}</span>
             </motion.button>
           ))}
         </div>
+      </div>
 
-        {/* 🍱 Food Results */}
+      {/* Results */}
+      <div className="p-4">
         {loading ? (
-          <HomeFoodListSkeleton />
+          <div className="flex flex-col items-center justify-center py-10 text-gray-500">
+            <Loader2 className="animate-spin mb-2" size={24} />
+            Loading foods...
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-10">{error}</div>
         ) : foods.length === 0 ? (
-          <NoFoodsFound />
+          <div className="text-center text-gray-500 py-10">
+            No foods found{selectedCategory ? ` in ${selectedCategory}` : ""}.
+          </div>
         ) : (
-          <div className="grid grid-cols-2 md:gap-4 gap-2">
-              {foods.map((food) => (
-              <Link key={food.slug}  href={`/food-details/${food._id}`}>  
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{   scale: 1.03,
-                    boxShadow: "0 8px 20px rgba(0,0,0,0.1)"
-                  }} transition={{ duration: 0.25 }} className="bg-white p-3 rounded-xl scroll shadow-md cursor-pointer">
-                  <div className="relative scroll rounded-md overflow-hidden">
+          <AnimatePresence>
+            <motion.div
+              layout
+              className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4"
+            >
+              {foods.map((food, index) => (
+                <motion.div
+                  key={food._id || index}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="bg-white rounded-xl shadow hover:shadow-lg transition p-3"
+                >
+                  <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2">
                     <img
-                      src={
-                        Array.isArray(food?.images)
-                          ? food.images[0]?.url
-                          : food?.image || food?.image
-                      }
-                      alt={food?.name}
-                      className="w-full h-36 object-cover rounded-md"
-                    />
+                    src={food.images?.[0]?.url || "/placeholder.jpg"}
+                    alt={food.name}
+                    className="w-full h-30 object-cover rounded-md"
+                  />
                   </div>
-
-                  <div>
-                    <h3 className="text-md font-semibold text-gray-800 truncate">
-                      {food.name}
-                    </h3>
-
-                    <div className="flex items-center gap-2 mt-1">
-                      <p className="flex items-center gap-1 text-sm font-medium text-gray-700 truncate">
-                        <Store className="text-[#FF6600] w-4" />
-                        {food?.vendor?.storeName || "Unknown Vendor"}
-                      </p>
-                    </div>
-
-                    <p className=" text-xs text-gray-500 flex items-center gap-1 mt-1">
-                      <MapPin size={12} className="text-orange-500" />
-                      {food?.vendor?.address
-                        ? `${food.vendor.address.street}, ${food.vendor.address.city}, ${food.vendor.address.state}`
-                        : "Address not available"}
-                    </p>
+                  <h3 className="font-medium text-gray-800 truncate">
+                    {food.name}
+                  </h3>
+                  <p className="text-sm text-gray-500 truncate">
+                    {food.description || "Delicious meal"}
+                  </p>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="font-semibold text-orange-500">
+                      ₦{food.price?.toLocaleString() || "—"}
+                    </span>
+                    <MapPin size={14} className="text-gray-400" />
                   </div>
                 </motion.div>
-              </Link>
               ))}
-          </div>
+            </motion.div>
+          </AnimatePresence>
         )}
+      </div>
+
+      {/* Bottom Vendor Button */}
+      <div className="fixed bottom-4 right-4">
+        <button className="bg-orange-500 text-white rounded-full p-4 shadow-lg hover:bg-orange-600 transition-colors">
+          <Store size={22} />
+        </button>
       </div>
     </div>
   );

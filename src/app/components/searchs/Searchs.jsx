@@ -224,6 +224,10 @@ export default function FoodSearchMobile() {
   const handleCategoryClick = async (category) => {
     setActiveCategory(category);
     setQuery("");
+
+    // ✅ Update query params in URL
+    router.push(`?category=${encodeURIComponent(category)}`);
+
     try {
       setLoading(true);
       const res = await axios.get(`${baseUrl}/search/food/search`, {
@@ -236,6 +240,7 @@ export default function FoodSearchMobile() {
       setLoading(false);
     }
   };
+
 
   // ✅ Trending click
   const handleTrendingClick = async (term) => {

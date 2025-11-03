@@ -15,5 +15,5 @@ export default function RootPage() {
     }
   }, [router]);
 
-  return <AuthLoader />;
+  return <AuthLoader/>;
 }

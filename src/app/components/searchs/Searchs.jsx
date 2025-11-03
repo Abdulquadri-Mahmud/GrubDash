@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Flame, MapPin, Search, SlidersHorizontal, Store } from "lucide-react";
+import { Clock, Flame, MapPin, Search, SlidersHorizontal, Store, Truck } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useApi } from "@/app/context/ApiContext";
 import HomeFoodListSkeleton from "../skeletons/HomeFoodListSkeleton";
@@ -326,7 +326,7 @@ export default function FoodSearchMobile() {
               className="grid grid-cols-2 md:gap-4 gap-1 mt-2 sm:grid-cols-3 md:grid-cols-4 pb-8"
             >
               {foods.map((food) => (
-                <Link key={food.slug} href={`/food-details/${food._id}`}>
+                <Link key={food.slug} href={`/test/${food._id}`}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -363,7 +363,7 @@ export default function FoodSearchMobile() {
 
                       <div className="flex justify-between items-center mt-2">
                         <p className="text-xs text-gray-500 flex items-center gap-1">
-                          <MapPin size={12} className="text-orange-500" />
+                          <Truck size={12} className="text-orange-500" />
                           {food?.vendor?.address
                             ? ` ${food.vendor.address.city}`
                             : "Address not available"}

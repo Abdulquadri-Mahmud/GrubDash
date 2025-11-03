@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 
 const FoodSearchMobile = dynamic(
   () => import("../components/searchs/Searchs"),
-  { ssr: false, suspense: true }
+  // { ssr: false, suspense: true }
 );
 
 export default function page() {

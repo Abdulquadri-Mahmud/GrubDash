@@ -326,7 +326,7 @@ export default function FoodSearchMobile() {
               className="grid grid-cols-2 md:gap-4 gap-1 mt-2 sm:grid-cols-3 md:grid-cols-4 pb-8"
             >
               {foods.map((food) => (
-                <Link key={food.slug} href={`/test/${food._id}`}>
+                <Link key={food.slug} href={`/food-details/${food._id}`}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

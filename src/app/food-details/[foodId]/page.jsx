@@ -12,12 +12,14 @@ import { useParams, useRouter } from "next/navigation";
 import { use, useEffect, useRef, useState } from "react";
 import { TbCurrencyNaira } from "react-icons/tb";
 
-export default function FoodDetails() {
+export default function FoodDetails({params}) {
   const [isClient, setIsClient] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedFood, setSelectedFood] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { foodId } = useParams();
+
+  const { foodId } = use(params);
+  
   const { food, isLoading, isError } = useFoodById(foodId);
   const router = useRouter();
   const dragRef = useRef(null);
